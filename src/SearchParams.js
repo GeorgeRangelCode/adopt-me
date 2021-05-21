@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Pet from "./Pet";
+import useBreedList from "./useBreedList";
 
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
@@ -7,19 +8,20 @@ const SearchParams = () => {
   const [animal, updateAnimal] = useState("");
   const [location, updateLocation] = useState("");
   const [breed, updateBreed] = useState("");
-  const [pets, updatePets] = useState([]);
-  const breeds = [];
+  const [pets, setPets] = useState([]);
+  const [breeds] = useBreedList(animal);
 
   useEffect(() => {
     requestPets();
-  }, []); // eslint-disable-line react-hooks-exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function requestPets() {
     const res = await fetch(
-      `https://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
+      `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
     );
     const json = await res.json();
-    updatePets(json.pets);
+
+    setPets(json.pets);
   }
 
   return (
